@@ -1,12 +1,192 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>ОтмазкоГенератор 3000</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(to right, #3b82f6, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .btn {
+            text-decoration: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #f8fafc;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .history-section {
+            text-align: left;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 30px;
+        }
+
+        .history-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #3b82f6;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .excuse-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .excuse-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.2s ease;
+        }
+
+        .excuse-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .situation-text {
+            font-size: 0.9rem;
+            color: #3b82f6;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: bold;
+        }
+
+        .result-text {
+            font-size: 1.1rem;
+            color: #f1f5f9;
+            line-height: 1.5;
+        }
+
+        .no-data {
+            color: #94a3b8;
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Тест</h1>
-    <a href="/generate">asd1</a>
+
+    <div class="container">
+        <h1>🤖 ОтмазкоГенератор 3000</h1>
+        <p class="subtitle">Искусственный интеллект на страже твоей академической успеваемости</p>
+
+        <div class="nav-buttons">
+            <a href="/generate" class="btn btn-primary">Генератор на сайте</a>
+            <a href="https://t.me/excuse_generator3000_bot" target="_blank" class="btn btn-secondary">🤖 Открыть Telegram-бота</a>
+        </div>
+
+        <div class="history-section">
+            <h2 class="history-title">🕒 Последние генерации (База данных)</h2>
+            <div class="excuse-list" id="excuseList">
+                <div class="no-data">История пока пуста. Сгенерируйте первую отмазку!</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            fetch('/api/excuses')
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.length > 0) {
+                        const list = document.getElementById('excuseList');
+                        list.innerHTML = '';
+                        data.forEach(item => {
+                            const card = document.createElement('div');
+                            card.className = 'excuse-card';
+                            card.innerHTML = `
+                                <div class="situation-text">Ситуация: ${item.situation}</div>
+                                <div class="result-text">«${item.excuse}»</div>
+                            `;
+                            list.appendChild(card);
+                        });
+                    }
+                })
+                .catch(err => {
+                    console.log("Ошибка загрузки истории:", err);
+                });
+        });
+    </script>
 </body>
 </html>
